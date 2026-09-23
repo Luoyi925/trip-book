@@ -18,6 +18,7 @@
             --success: #7cb342;
             --warning: #f57c00;
             --shadow: 0 4px 16px rgba(184, 112, 60, 0.08);
+            --mask: rgba(92, 60, 34, 0.5);
         }
 
         * {
@@ -51,9 +52,64 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* 弹窗通用 */
+        .modal-mask {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--mask);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal-mask.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg);
+            width: 100%;
+            max-height: 85vh;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border);
+            border: none;
+            color: var(--text-light);
+            font-size: 16px;
+        }
+
         /* 顶部标题 */
         .page-header {
             margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .page-title {
@@ -66,6 +122,15 @@
         .page-subtitle {
             font-size: 13px;
             color: var(--text-light);
+        }
+
+        .btn-quick {
+            padding: 6px 12px;
+            border-radius: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 12px;
         }
 
         /* 卡片通用 */
@@ -200,6 +265,28 @@
             color: var(--text-light);
         }
 
+        /* 快速录入弹窗 */
+        .input-area {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 14px;
+            margin-bottom: 12px;
+            resize: vertical;
+            background: var(--card);
+            outline: none;
+        }
+
+        .parse-result {
+            background: #f0f9eb;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--success);
+        }
+
         /* 搜索页 */
         .search-box {
             display: flex;
@@ -324,6 +411,13 @@
             font-size: 12px;
         }
 
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
         /* 规划页 */
         .plan-header {
             display: flex;
@@ -357,6 +451,7 @@
             flex-direction: column;
             gap: 8px;
             margin-bottom: 16px;
+            min-height: 60px;
         }
 
         .selected-item {
@@ -367,11 +462,6 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: var(--shadow);
-            cursor: grab;
-        }
-
-        .selected-item:active {
-            cursor: grabbing;
         }
 
         .selected-item .name {
@@ -411,6 +501,7 @@
         .route-section .info {
             font-size: 12px;
             color: var(--text-light);
+            margin-bottom: 2px;
         }
 
         .btn-primary {
@@ -438,6 +529,7 @@
             padding: 14px 8px;
             text-align: center;
             box-shadow: var(--shadow);
+            cursor: pointer;
         }
 
         .tool-icon {
@@ -492,6 +584,73 @@
             line-height: 1.6;
         }
 
+        /* 工具面板 */
+        .tool-panel h4 {
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .rate-calc {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .rate-calc input {
+            flex: 1;
+            height: 36px;
+            padding: 0 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .link-item {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .link-item a {
+            color: var(--primary-dark);
+            font-size: 13px;
+            text-decoration: none;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .add-link-box {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .add-link-box input {
+            flex: 1;
+            height: 36px;
+            padding: 0 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .add-link-box button {
+            padding: 0 14px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 13px;
+        }
+
         /* 我的页面 */
         .profile-header {
             text-align: center;
@@ -538,6 +697,7 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: var(--shadow);
+            margin-bottom: 16px;
         }
 
         .menu-item {
@@ -546,6 +706,7 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border);
+            cursor: pointer;
         }
 
         .menu-item:last-child {
@@ -586,6 +747,7 @@
             gap: 2px;
             color: var(--text-light);
             font-size: 11px;
+            cursor: pointer;
         }
 
         .tab-item.active {
@@ -608,6 +770,7 @@
             justify-content: center;
             font-size: 24px;
             box-shadow: 0 4px 12px rgba(217, 142, 88, 0.3);
+            cursor: pointer;
         }
     </style>
 </head>
@@ -616,8 +779,11 @@
 <!-- 首页 -->
 <div class="page active" id="page-home">
     <div class="page-header">
-        <h1 class="page-title">今日行程</h1>
-        <p class="page-subtitle">9月28日 · 杭州 · 2人同行</p>
+        <div>
+            <h1 class="page-title">今日行程</h1>
+            <p class="page-subtitle">9月28日 · 杭州 · 2人同行</p>
+        </div>
+        <button class="btn-quick" onclick="showQuickAdd()">快速录入</button>
     </div>
 
     <div class="trip-info">
@@ -651,8 +817,10 @@
 <!-- 探索页 -->
 <div class="page" id="page-explore">
     <div class="page-header">
-        <h1 class="page-title">发现目的地</h1>
-        <p class="page-subtitle">搜索周边景点美食，一键加入行程</p>
+        <div>
+            <h1 class="page-title">发现目的地</h1>
+            <p class="page-subtitle">搜索周边景点美食，一键加入行程</p>
+        </div>
     </div>
 
     <select class="city-select" id="citySelect">
@@ -667,11 +835,11 @@
     </div>
 
     <div class="category-tabs" id="categoryTabs">
-        <button class="category-tab active" data-type="景点">🏞️ 景点</button>
-        <button class="category-tab" data-type="美食">🍜 美食</button>
-        <button class="category-tab" data-type="咖啡">☕ 咖啡</button>
-        <button class="category-tab" data-type="购物">🛍️ 购物</button>
-        <button class="category-tab" data-type="酒店">🏨 酒店</button>
+        <button class="category-tab active" data-type="风景名胜">🏞️ 景点</button>
+        <button class="category-tab" data-type="餐饮">🍜 美食</button>
+        <button class="category-tab" data-type="咖啡厅">☕ 咖啡</button>
+        <button class="category-tab" data-type="购物服务">🛍️ 购物</button>
+        <button class="category-tab" data-type="住宿服务">🏨 酒店</button>
         <button class="category-tab" data-type="博物馆">🏛️ 博物馆</button>
     </div>
 
@@ -681,36 +849,17 @@
 
     <div class="card-title">推荐地点</div>
     <div class="poi-list" id="poiList">
-        <div class="poi-item">
-            <div class="poi-info">
-                <h4>西湖风景名胜区</h4>
-                <p>距离市中心 2.3km · 杭州市西湖区</p>
-                <span class="poi-rating">⭐ 4.9分 · 免费</span>
-            </div>
-            <div class="poi-actions">
-                <button class="btn-add" onclick="addToPlan('西湖风景名胜区')">+行程</button>
-                <button class="btn-fav">收藏</button>
-            </div>
-        </div>
-        <div class="poi-item">
-            <div class="poi-info">
-                <h4>河坊街</h4>
-                <p>距离市中心 1.8km · 杭州市上城区</p>
-                <span class="poi-rating">⭐ 4.6分 · 免费</span>
-            </div>
-            <div class="poi-actions">
-                <button class="btn-add" onclick="addToPlan('河坊街')">+行程</button>
-                <button class="btn-fav">收藏</button>
-            </div>
-        </div>
+        <div class="loading">正在搜索周边地点...</div>
     </div>
 </div>
 
 <!-- 规划页 -->
 <div class="page" id="page-plan">
     <div class="page-header">
-        <h1 class="page-title">行程规划</h1>
-        <p class="page-subtitle">拖拽调整顺序，智能生成最优路线</p>
+        <div>
+            <h1 class="page-title">行程规划</h1>
+            <p class="page-subtitle">勾选地点，智能生成最优路线</p>
+        </div>
     </div>
 
     <div class="plan-header">
@@ -722,27 +871,15 @@
     </div>
 
     <div class="selected-list" id="selectedList">
-        <div class="selected-item">
-            <span class="name">📍 西湖风景名胜区</span>
-            <button class="remove" onclick="removePlace(this)">移除</button>
-        </div>
-        <div class="selected-item">
-            <span class="name">📍 河坊街</span>
-            <button class="remove" onclick="removePlace(this)">移除</button>
+        <div style="text-align:center;color:var(--text-light);padding:20px;font-size:13px;">
+            去「探索」页添加地点吧
         </div>
     </div>
 
     <div class="card-title">路线详情</div>
     <div class="route-detail" id="routeDetail">
-        <div class="route-section">
-            <div class="from-to">酒店 → 西湖</div>
-            <div class="info">🚶 步行 1.2km · 约18分钟</div>
-            <div class="info">🚕 打车约12元 · 8分钟</div>
-        </div>
-        <div class="route-section">
-            <div class="from-to">西湖 → 河坊街</div>
-            <div class="info">🚶 步行 2.1km · 约30分钟</div>
-            <div class="info">🚌 公交7路 · 2元 · 15分钟</div>
+        <div style="text-align:center;color:var(--text-light);padding:10px;font-size:13px;">
+            添加地点后点击下方按钮生成路线
         </div>
     </div>
 
@@ -756,42 +893,44 @@
 <!-- 工具箱 -->
 <div class="page" id="page-tool">
     <div class="page-header">
-        <h1 class="page-title">出行工具箱</h1>
-        <p class="page-subtitle">旅行必备实用工具合集</p>
+        <div>
+            <h1 class="page-title">出行工具箱</h1>
+            <p class="page-subtitle">旅行必备实用工具合集</p>
+        </div>
     </div>
 
     <div class="tool-grid">
-        <div class="tool-item">
+        <div class="tool-item" onclick="openTool('baggage')">
             <div class="tool-icon">🧳</div>
             <div class="tool-name">行李清单</div>
         </div>
-        <div class="tool-item">
+        <div class="tool-item" onclick="openTool('rate')">
             <div class="tool-icon">💴</div>
             <div class="tool-name">汇率换算</div>
         </div>
-        <div class="tool-item">
+        <div class="tool-item" onclick="openTool('metro')">
             <div class="tool-icon">🚇</div>
             <div class="tool-name">地铁图</div>
         </div>
-        <div class="tool-item">
+        <div class="tool-item" onclick="openTool('weather')">
             <div class="tool-icon">🌤️</div>
             <div class="tool-name">天气</div>
         </div>
-        <div class="tool-item">
+        <div class="tool-item" onclick="openTool('todo')">
             <div class="tool-icon">📝</div>
             <div class="tool-name">待办分工</div>
         </div>
-        <div class="tool-item">
+        <div class="tool-item" onclick="openTool('translate')">
             <div class="tool-icon">📖</div>
             <div class="tool-name">翻译</div>
         </div>
-        <div class="tool-item">
+        <div class="tool-item" onclick="openTool('warning')">
             <div class="tool-icon">⚠️</div>
             <div class="tool-name">当地避雷</div>
         </div>
-        <div class="tool-item">
-            <div class="tool-icon">📞</div>
-            <div class="tool-name">紧急电话</div>
+        <div class="tool-item" onclick="openTool('favorite')">
+            <div class="tool-icon">🔗</div>
+            <div class="tool-name">种草收藏</div>
         </div>
     </div>
 
@@ -846,11 +985,11 @@
 
     <div class="stats-row">
         <div class="stat-item">
-            <div class="stat-num">8</div>
+            <div class="stat-num" id="statPlace">0</div>
             <div class="stat-label">已选地点</div>
         </div>
         <div class="stat-item">
-            <div class="stat-num">3</div>
+            <div class="stat-num" id="statFav">0</div>
             <div class="stat-label">收藏</div>
         </div>
         <div class="stat-item">
@@ -870,7 +1009,7 @@
             <div class="timeline-item">
                 <div class="timeline-time">Day 2 · 9.29</div>
                 <div class="timeline-name">杭州西湖一日</div>
-                <div class="timeline-desc">2个景点 · 3家美食</div>
+                <div class="timeline-desc">景点 + 美食打卡</div>
             </div>
             <div class="timeline-item">
                 <div class="timeline-time">Day 3 · 9.30</div>
@@ -896,18 +1035,45 @@
     </div>
 
     <div class="menu-list">
-        <div class="menu-item">
+        <div class="menu-item" onclick="openTool('favorite')">
             <div class="left">⭐ 我的收藏</div>
             <span class="arrow">›</span>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" onclick="alert('历史行程功能开发中')">
             <div class="left">📸 历史行程</div>
             <span class="arrow">›</span>
         </div>
-        <div class="menu-item">
+        <div class="menu-item" onclick="alert('设置功能开发中')">
             <div class="left">⚙️ 设置</div>
             <span class="arrow">›</span>
         </div>
+    </div>
+</div>
+
+<!-- 快速录入弹窗 -->
+<div class="modal-mask" id="quickAddModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">快速录入行程</div>
+            <button class="modal-close" onclick="closeModal('quickAddModal')">×</button>
+        </div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:10px;">
+            粘贴航班短信、酒店预订信息，自动识别并加入行程
+        </p>
+        <textarea class="input-area" id="quickInput" placeholder="例如：【飞常准】您预订的9月28日 CA404 深圳宝安-杭州萧山 20:00起飞 22:15降落"></textarea>
+        <button class="btn-primary" onclick="parseText()" style="margin-bottom:12px;">智能识别并添加</button>
+        <div id="parseResult" style="display:none;"></div>
+    </div>
+</div>
+
+<!-- 工具通用弹窗 -->
+<div class="modal-mask" id="toolModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title" id="toolModalTitle">工具</div>
+            <button class="modal-close" onclick="closeModal('toolModal')">×</button>
+        </div>
+        <div id="toolModalContent" class="tool-panel"></div>
     </div>
 </div>
 
@@ -935,7 +1101,14 @@
 </div>
 
 <script>
-    // Tab切换
+    // ========== 全局变量 ==========
+    let homeMap, searchMap, planMap;
+    let placeSearch, driving;
+    let selectedPlaces = [];
+    let favorites = [];
+    let currentCity = '杭州';
+
+    // ========== Tab切换 ==========
     document.querySelectorAll('.tab-item').forEach(tab => {
         tab.addEventListener('click', () => {
             const page = tab.dataset.page;
@@ -947,14 +1120,14 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + page).classList.add('active');
 
-            // 切换到对应页面时刷新地图
             if (page === 'home') initHomeMap();
-            if (page === 'explore') initSearchMap();
+            if (page === 'explore') { initSearchMap(); doSearch(); }
             if (page === 'plan') initPlanMap();
+            updateStats();
         });
     });
 
-    // 分类标签切换
+    // ========== 分类标签切换 ==========
     document.querySelectorAll('.category-tab').forEach(tab => {
         tab.addEventListener('click', () => {
             document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
@@ -963,7 +1136,7 @@
         });
     });
 
-    // 模式切换
+    // ========== 模式切换 ==========
     document.getElementById('modeSmart').addEventListener('click', function() {
         document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
@@ -973,10 +1146,7 @@
         this.classList.add('active');
     });
 
-    // 地图初始化
-    let homeMap, searchMap, planMap;
-    let placeSearch;
-
+    // ========== 地图初始化 ==========
     function initHomeMap() {
         if (homeMap) return;
         homeMap = new AMap.Map('homeMap', {
@@ -996,7 +1166,7 @@
         placeSearch = new AMap.PlaceSearch({
             pageSize: 10,
             pageIndex: 1,
-            city: '杭州',
+            city: currentCity,
             map: searchMap
         });
     }
@@ -1004,22 +1174,33 @@
     function initPlanMap() {
         if (planMap) return;
         planMap = new AMap.Map('planMap', {
-            zoom: 13,
+            zoom: 12,
             center: [120.15, 30.28],
             mapStyle: 'amap://styles/light'
         });
+        driving = new AMap.Driving({
+            map: planMap,
+            policy: AMap.DrivingPolicy.LEAST_TIME
+        });
     }
 
-    // 搜索POI
+    // ========== POI搜索 ==========
     function doSearch() {
-        const keyword = document.getElementById('searchInput').value || document.querySelector('.category-tab.active').dataset.type;
+        const type = document.querySelector('.category-tab.active').dataset.type;
+        const keyword = document.getElementById('searchInput').value || type;
         const city = document.getElementById('citySelect').value;
+        currentCity = city;
         
         if (!placeSearch) initSearchMap();
         placeSearch.setCity(city);
+        
+        document.getElementById('poiList').innerHTML = '<div class="loading">正在搜索周边地点...</div>';
+        
         placeSearch.search(keyword, (status, result) => {
-            if (status === 'complete' && result.poiList) {
+            if (status === 'complete' && result.poiList && result.poiList.pois) {
                 renderPoiList(result.poiList.pois);
+            } else {
+                document.getElementById('poiList').innerHTML = '<div class="loading">未找到相关地点，换个关键词试试</div>';
             }
         });
     }
@@ -1028,66 +1209,399 @@
     function renderPoiList(pois) {
         const list = document.getElementById('poiList');
         list.innerHTML = '';
-        pois.slice(0, 6).forEach(poi => {
+        pois.slice(0, 8).forEach(poi => {
+            const distance = poi.distance ? (poi.distance/1000).toFixed(1)+'km' : '';
             const item = document.createElement('div');
             item.className = 'poi-item';
             item.innerHTML = `
                 <div class="poi-info">
                     <h4>${poi.name}</h4>
-                    <p>${poi.address || ''} · ${poi.distance ? (poi.distance/1000).toFixed(1)+'km' : ''}</p>
+                    <p>${poi.address || ''} ${distance ? '· '+distance : ''}</p>
                     <span class="poi-rating">⭐ ${poi.rating || '4.5'}分</span>
                 </div>
                 <div class="poi-actions">
-                    <button class="btn-add" onclick="addToPlan('${poi.name}')">+行程</button>
-                    <button class="btn-fav">收藏</button>
+                    <button class="btn-add" onclick="addToPlan('${poi.name}', [${poi.location.lng}, ${poi.location.lat}])">+行程</button>
+                    <button class="btn-fav" onclick="addToFav('${poi.name}')">收藏</button>
                 </div>
             `;
             list.appendChild(item);
         });
     }
 
-    // 加入行程
-    function addToPlan(name) {
+    // ========== 加入行程 ==========
+    function addToPlan(name, location) {
+        selectedPlaces.push({ name, location });
+        renderSelectedList();
+        updateStats();
+        
+        // 提示
+        const btn = event.target;
+        const originalText = btn.innerText;
+        btn.innerText = '已添加';
+        btn.style.background = '#999';
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.background = '';
+        }, 1000);
+    }
+
+    // 渲染已选列表
+    function renderSelectedList() {
         const list = document.getElementById('selectedList');
-        const item = document.createElement('div');
-        item.className = 'selected-item';
-        item.innerHTML = `
-            <span class="name">📍 ${name}</span>
-            <button class="remove" onclick="removePlace(this)">移除</button>
-        `;
-        list.appendChild(item);
-        alert('已加入行程规划');
+        if (selectedPlaces.length === 0) {
+            list.innerHTML = '<div style="text-align:center;color:var(--text-light);padding:20px;font-size:13px;">去「探索」页添加地点吧</div>';
+            return;
+        }
+        list.innerHTML = '';
+        selectedPlaces.forEach((place, index) => {
+            const item = document.createElement('div');
+            item.className = 'selected-item';
+            item.innerHTML = `
+                <span class="name">📍 ${place.name}</span>
+                <button class="remove" onclick="removePlace(${index})">移除</button>
+            `;
+            list.appendChild(item);
+        });
     }
 
     // 移除地点
-    function removePlace(btn) {
-        btn.parentElement.remove();
+    function removePlace(index) {
+        selectedPlaces.splice(index, 1);
+        renderSelectedList();
+        updateStats();
     }
 
-    // 生成路线
+    // ========== 生成路线 ==========
     function generateRoute() {
-        alert('路线已生成，已同步到首页今日行程');
-        switchTab('home');
+        if (selectedPlaces.length < 2) {
+            alert('至少添加2个地点才能生成路线');
+            return;
+        }
+
+        initPlanMap();
+        driving.clear();
+
+        const start = selectedPlaces[0].location;
+        const end = selectedPlaces[selectedPlaces.length - 1].location;
+        const waypoints = selectedPlaces.slice(1, -1).map(p => p.location);
+
+        driving.search(start, end, { waypoints }, (status, result) => {
+            if (status === 'complete') {
+                renderRouteDetail(result.routes[0]);
+                // 同步到首页地图
+                syncRouteToHome(result.routes[0]);
+                alert('路线生成成功，已同步到首页');
+            } else {
+                alert('路线规划失败，请重试');
+            }
+        });
     }
 
-    function switchTab(page) {
-        document.querySelector(`[data-page="${page}"]`).click();
+    // 渲染路线详情
+    function renderRouteDetail(route) {
+        const detail = document.getElementById('routeDetail');
+        const steps = route.steps;
+        let html = '';
+        
+        for (let i = 0; i < selectedPlaces.length - 1; i++) {
+            const from = selectedPlaces[i].name;
+            const to = selectedPlaces[i+1].name;
+            // 估算对应路段
+            const segment = route.steps.slice(i * 2, (i+1) * 2);
+            const distance = (route.distance / 1000).toFixed(1);
+            const time = Math.round(route.time / 60);
+            
+            html += `
+                <div class="route-section">
+                    <div class="from-to">${from} → ${to}</div>
+                    <div class="info">🚗 驾车约 ${Math.round(route.distance/(selectedPlaces.length-1)/1000*10)/10}km · ${Math.round(route.time/(selectedPlaces.length-1)/60)}分钟</div>
+                    <div class="info">🚕 打车约 ${Math.round(route.taxi_cost/(selectedPlaces.length-1))} 元</div>
+                    <div class="info">🚶 步行距离较长，建议驾车/打车</div>
+                </div>
+            `;
+        }
+        
+        html += `
+            <div style="padding-top:8px;border-top:1px solid var(--border);margin-top:8px;">
+                <div style="font-weight:500;margin-bottom:4px;">全程总计</div>
+                <div class="info">总里程 ${(route.distance/1000).toFixed(1)}km · 预计用时 ${Math.round(route.time/60)}分钟</div>
+                <div class="info">打车预估费用约 ${Math.round(route.taxi_cost)} 元</div>
+            </div>
+        `;
+        
+        detail.innerHTML = html;
     }
 
-    // 城市切换
-    document.getElementById('citySelect').addEventListener('change', doSearch);
-
-    // 页面加载初始化
-    window.onload = () => {
+    // 同步路线到首页
+    function syncRouteToHome(route) {
         initHomeMap();
-        // 加载本地存储数据
-        loadLocalData();
+        const homeDriving = new AMap.Driving({ map: homeMap });
+        const start = selectedPlaces[0].location;
+        const end = selectedPlaces[selectedPlaces.length - 1].location;
+        const waypoints = selectedPlaces.slice(1, -1).map(p => p.location);
+        homeDriving.search(start, end, { waypoints });
+    }
+
+    // ========== 快速录入 ==========
+    function showQuickAdd() {
+        document.getElementById('quickAddModal').classList.add('show');
+    }
+
+    function parseText() {
+        const text = document.getElementById('quickInput').value;
+        if (!text.trim()) {
+            alert('请先粘贴行程信息');
+            return;
+        }
+
+        // 简单正则识别
+        const timeMatch = text.match(/(\d{1,2}:\d{2})/g);
+        const flightMatch = text.match(/([A-Z]{2}\d{3,4})/);
+        const cityMatch = text.match(/([\u4e00-\u9fa5]{2,4})(机场|宝安|萧山|禄口|虹桥)/);
+        
+        let result = '识别结果：<br>';
+        if (flightMatch) result += `航班号：${flightMatch[1]}<br>`;
+        if (timeMatch && timeMatch.length >= 2) {
+            result += `时间：${timeMatch[0]} - ${timeMatch[timeMatch.length-1]}<br>`;
+        }
+        
+        result += '<br>已添加到今日时间轴';
+        
+        document.getElementById('parseResult').style.display = 'block';
+        document.getElementById('parseResult').className = 'parse-result';
+        document.getElementById('parseResult').innerHTML = result;
+
+        // 添加到时间轴
+        if (flightMatch && timeMatch.length >= 2) {
+            addToTimeline(`${timeMatch[0]} - ${timeMatch[timeMatch.length-1]}`, `航班 ${flightMatch[1]}`, '飞行行程');
+        }
+    }
+
+    function addToTimeline(time, name, desc) {
+        const timeline = document.getElementById('todayTimeline');
+        const item = document.createElement('div');
+        item.className = 'timeline-item';
+        item.innerHTML = `
+            <div class="timeline-time">${time}</div>
+            <div class="timeline-name">${name}</div>
+            <div class="timeline-desc">${desc}</div>
+        `;
+        timeline.appendChild(item);
+    }
+
+    // ========== 工具箱 ==========
+    const toolPanels = {
+        baggage: {
+            title: '行李清单',
+            content: `
+                <div class="check-list">
+                    <div class="check-item"><input type="checkbox"><label>身份证 / 护照</label></div>
+                    <div class="check-item"><input type="checkbox"><label>手机 + 充电器 + 充电宝</label></div>
+                    <div class="check-item"><input type="checkbox"><label>换洗衣物 3套</label></div>
+                    <div class="check-item"><input type="checkbox"><label>舒适步行鞋</label></div>
+                    <div class="check-item"><input type="checkbox"><label>雨伞 / 防晒帽</label></div>
+                    <div class="check-item"><input type="checkbox"><label>洗漱用品</label></div>
+                </div>
+            `
+        },
+        rate: {
+            title: '汇率换算',
+            content: `
+                <h4>人民币 ↔ 新台币 / 日元</h4>
+                <div class="rate-calc">
+                    <input type="number" placeholder="人民币" id="rmbInput" oninput="calcRate()">
+                    <span>=</span>
+                    <input type="text" placeholder="台币" id="twdInput" readonly>
+                </div>
+                <p style="font-size:12px;color:var(--text-light);">参考汇率：1人民币 ≈ 4.35新台币</p>
+            `
+        },
+        metro: {
+            title: '地铁线路图',
+            content: `
+                <h4>杭州地铁</h4>
+                <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
+                    主要线路：1号线（西湖/东站）、2号线、5号线
+                    <br>支付宝搜索「杭州地铁」可直接刷码乘车
+                </p>
+                <h4>苏州地铁</h4>
+                <p style="font-size:13px;color:var(--text-light);margin-bottom:12px;">
+                    1号线连接火车站、拙政园、平江路
+                    <br>苏e行APP或支付宝乘车码
+                </p>
+                <h4>南京地铁</h4>
+                <p style="font-size:13px;color:var(--text-light);">
+                    1号线贯穿南京站、新街口、夫子庙
+                    <br>支付宝搜索「南京地铁」刷码
+                </p>
+            `
+        },
+        weather: {
+            title: '天气预告',
+            content: `
+                <h4>杭州</h4>
+                <p style="font-size:13px;margin-bottom:8px;">🌤️ 25-32℃ 多云转晴</p>
+                <h4>苏州</h4>
+                <p style="font-size:13px;margin-bottom:8px;">🌤️ 24-31℃ 晴</p>
+                <h4>南京</h4>
+                <p style="font-size:13px;">🌥️ 23-30℃ 多云</p>
+                <p style="font-size:12px;color:var(--text-light);margin-top:12px;">
+                    建议带防晒帽、薄外套，早晚有温差
+                </p>
+            `
+        },
+        todo: {
+            title: '待办分工',
+            content: `
+                <div class="check-list">
+                    <div class="check-item"><input type="checkbox"><label>值机选座 · 起飞前24h</label></div>
+                    <div class="check-item"><input type="checkbox"><label>酒店确认订单</label></div>
+                    <div class="check-item"><input type="checkbox"><label>租车预约 + 驾照</label></div>
+                    <div class="check-item"><input type="checkbox"><label>餐厅订位</label></div>
+                    <div class="check-item"><input type="checkbox"><label>门票预约</label></div>
+                </div>
+            `
+        },
+        translate: {
+            title: '常用翻译',
+            content: `
+                <h4>江浙沪方言小提示</h4>
+                <p style="font-size:13px;margin-bottom:8px;">
+                    「谢谢」→ 吴语：xia xia
+                    <br>「多少钱」→ 吴语：go duo sao
+                    <br>「地铁站在哪」→ 普通话通用
+                </p>
+                <p style="font-size:12px;color:var(--text-light);margin-top:12px;">
+                    当地基本通用普通话，无障碍交流
+                </p>
+            `
+        },
+        warning: {
+            title: '当地避雷',
+            content: `
+                <div class="warning-box">
+                    <h5>景区周边美食慎入</h5>
+                    <p>西湖、河坊街周边连锁餐厅价格偏高，建议往巷子里走50米。</p>
+                </div>
+                <div class="warning-box">
+                    <h5>苏州园林避开周末</h5>
+                    <p>拙政园、留园周末人流量翻倍，建议工作日早上去。</p>
+                </div>
+                <div class="warning-box">
+                    <h5>南京夫子庙夜景最佳</h5>
+                    <p>建议傍晚过去，顺便坐秦淮河游船，白天体验一般。</p>
+                </div>
+            `
+        },
+        favorite: {
+            title: '种草收藏',
+            content: `
+                <div id="favLinkList"></div>
+                <div class="add-link-box">
+                    <input type="text" id="linkInput" placeholder="粘贴小红书/大众点评链接">
+                    <button onclick="addLink()">添加</button>
+                </div>
+                <p style="font-size:12px;color:var(--text-light);margin-top:10px;">
+                    保存种草链接，点击直接跳转查看
+                </p>
+            `
+        }
     };
 
-    // 本地存储
+    function openTool(type) {
+        const panel = toolPanels[type];
+        if (!panel) return;
+        
+        document.getElementById('toolModalTitle').innerText = panel.title;
+        document.getElementById('toolModalContent').innerHTML = panel.content;
+        document.getElementById('toolModal').classList.add('show');
+
+        if (type === 'favorite') renderFavLinks();
+    }
+
+    // ========== 收藏链接 ==========
+    function addToFav(name) {
+        favorites.push({ name, type: 'place' });
+        saveLocalData();
+        updateStats();
+        alert('已收藏');
+    }
+
+    function addLink() {
+        const url = document.getElementById('linkInput').value.trim();
+        if (!url) return;
+        
+        favorites.push({ name: url, url, type: 'link' });
+        document.getElementById('linkInput').value = '';
+        saveLocalData();
+        renderFavLinks();
+        updateStats();
+    }
+
+    function renderFavLinks() {
+        const list = document.getElementById('favLinkList');
+        if (!list) return;
+        
+        const links = favorites.filter(f => f.type === 'link');
+        if (links.length === 0) {
+            list.innerHTML = '<p style="color:var(--text-light);font-size:13px;padding:10px 0;">暂无收藏链接</p>';
+            return;
+        }
+        
+        list.innerHTML = '';
+        links.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'link-item';
+            div.innerHTML = `
+                <a href="${item.url}" target="_blank">${item.name}</a>
+                <button class="btn-mini outline" onclick="removeFav(${index})">删除</button>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    function removeFav(index) {
+        favorites.splice(index, 1);
+        saveLocalData();
+        renderFavLinks();
+        updateStats();
+    }
+
+    // ========== 弹窗通用 ==========
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('show');
+    }
+
+    // 点击遮罩关闭
+    document.querySelectorAll('.modal-mask').forEach(mask => {
+        mask.addEventListener('click', e => {
+            if (e.target === mask) mask.classList.remove('show');
+        });
+    });
+
+    // ========== 数据统计 ==========
+    function updateStats() {
+        document.getElementById('statPlace').innerText = selectedPlaces.length;
+        document.getElementById('statFav').innerText = favorites.length;
+    }
+
+    // ========== 汇率计算 ==========
+    function calcRate() {
+        const rmb = parseFloat(document.getElementById('rmbInput').value);
+        if (!isNaN(rmb)) {
+            document.getElementById('twdInput').value = (rmb * 4.35).toFixed(2) + ' 新台币';
+        }
+    }
+
+    // ========== 城市切换 ==========
+    document.getElementById('citySelect').addEventListener('change', doSearch);
+
+    // ========== 本地存储 ==========
     function saveLocalData() {
         const data = {
-            bags: Array.from(document.querySelectorAll('.check-item input')).map(i => i.checked)
+            bags: Array.from(document.querySelectorAll('.check-item input')).map(i => i.checked),
+            favorites: favorites,
+            places: selectedPlaces
         };
         localStorage.setItem('tripData', JSON.stringify(data));
     }
@@ -1096,17 +1610,30 @@
         const data = localStorage.getItem('tripData');
         if (data) {
             const obj = JSON.parse(data);
+            if (obj.favorites) favorites = obj.favorites;
+            if (obj.places) selectedPlaces = obj.places;
+            
             const inputs = document.querySelectorAll('.check-item input');
-            obj.bags.forEach((checked, i) => {
-                if (inputs[i]) inputs[i].checked = checked;
-            });
+            if (obj.bags) {
+                obj.bags.forEach((checked, i) => {
+                    if (inputs[i]) inputs[i].checked = checked;
+                });
+            }
         }
+        renderSelectedList();
+        updateStats();
     }
 
     // 监听勾选保存
     document.querySelectorAll('.check-item input').forEach(input => {
         input.addEventListener('change', saveLocalData);
     });
+
+    // ========== 页面加载 ==========
+    window.onload = () => {
+        initHomeMap();
+        loadLocalData();
+    };
 </script>
 
 </body>
