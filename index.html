@@ -1,643 +1,1113 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>旅行手册 | 闺蜜出行</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-    body {
-      background: #FFF7F0;
-      color: #5C4033;
-      padding: 16px;
-      line-height: 1.6;
-      padding-bottom: 40px;
-    }
-    .container {
-      max-width: 430px;
-      margin: 0 auto;
-    }
-    .card {
-      background: #fff;
-      border-radius: 18px;
-      padding: 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 14px rgba(255, 140, 80, 0.08);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>旅行手册 · 江浙沪之旅</title>
+    <script src="https://webapi.amap.com/maps?v=2.0&key=ee5a42cb872d9eb658182f98cf785072&plugin=AMap.PlaceSearch,AMap.Driving,AMap.Transfer"></script>
+    <style>
+        :root {
+            --primary: #d98e58;
+            --primary-dark: #b8703c;
+            --primary-light: #f8e1c9;
+            --bg: #fff8f0;
+            --card: #ffffff;
+            --text: #5c3c22;
+            --text-light: #8b6a4f;
+            --border: #f0e0cc;
+            --success: #7cb342;
+            --warning: #f57c00;
+            --shadow: 0 4px 16px rgba(184, 112, 60, 0.08);
+        }
 
-    /* ========== 1. 封面Banner ========== */
-    .cover-card {
-      background: linear-gradient(160deg, #FFCBA4, #FFE4D0);
-      color: #6B3A20;
-      text-align: center;
-      padding: 28px 20px;
-      border-radius: 22px;
-      margin-bottom: 16px;
-    }
-    .cover-card h1 {
-      font-size: 22px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .cover-sub {
-      font-size: 13px;
-      opacity: 0.85;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    /* ========== 2. 航班倒计时模块 ========== */
-    .flight-card {
-      background: linear-gradient(135deg, #FFE0CC, #FFF0E3);
-    }
-    .flight-title {
-      font-size: 14px;
-      color: #8B5A3C;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .countdown-box {
-      text-align: center;
-      margin: 10px 0;
-    }
-    .countdown-time {
-      font-size: 32px;
-      font-weight: 700;
-      color: #E8753A;
-    }
-    .countdown-label {
-      font-size: 12px;
-      color: #9C6B4E;
-      margin-top: 4px;
-    }
-    .flight-info {
-      margin-top: 14px;
-      font-size: 13px;
-      line-height: 2;
-      color: #7A5238;
-    }
-    .flight-info div {
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 1px dashed #FFD3B8;
-      padding: 4px 0;
-    }
-    .flight-info div:last-child {
-      border: none;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 14px;
+            line-height: 1.5;
+            padding-bottom: 70px;
+        }
 
-    /* ========== 3. 行程总览 ========== */
-    .section-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: #6B3A20;
-    }
-    .day-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 12px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-    .day-tab {
-      flex: 1;
-      min-width: 70px;
-      text-align: center;
-      padding: 8px 6px;
-      border-radius: 10px;
-      font-size: 12px;
-      background: #FFF0E3;
-      color: #9C6B4E;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .day-tab.active {
-      background: #FFB380;
-      color: #fff;
-      font-weight: 500;
-    }
-    .day-tab .day-date {
-      font-size: 11px;
-      opacity: 0.8;
-      margin-top: 2px;
-    }
-    #map-container {
-      width: 100%;
-      height: 200px;
-      border-radius: 12px;
-      background: #FFF5ED;
-    }
+        .page {
+            display: none;
+            padding: 16px;
+            animation: fadeIn 0.3s ease;
+        }
 
-    /* ========== 4. 今日路线时间轴 ========== */
-    .timeline-item {
-      position: relative;
-      padding-left: 28px;
-      padding-bottom: 18px;
-      border-left: 2px solid #FFE0CC;
-      margin-left: 8px;
-    }
-    .timeline-item:last-child {
-      border-left: 2px solid transparent;
-      padding-bottom: 0;
-    }
-    .timeline-dot {
-      position: absolute;
-      left: -7px;
-      top: 2px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #FFB380;
-      border: 2px solid #fff;
-      box-shadow: 0 0 0 2px #FFB380;
-    }
-    .timeline-time {
-      font-size: 12px;
-      color: #9C6B4E;
-      margin-bottom: 4px;
-    }
-    .timeline-name {
-      font-size: 15px;
-      font-weight: 500;
-      margin-bottom: 6px;
-    }
-    .nav-btn {
-      display: inline-block;
-      background: #FFB380;
-      color: #fff;
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      text-decoration: none;
-      margin-right: 6px;
-    }
-    .detail-btn {
-      display: inline-block;
-      background: #FFF0E3;
-      color: #C27A52;
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 6px;
-    }
+        .page.active {
+            display: block;
+        }
 
-    /* ========== 5. 每日详情折叠 ========== */
-    .detail-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      padding: 6px 0;
-    }
-    .detail-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease;
-      font-size: 13px;
-      color: #7A5238;
-      line-height: 1.8;
-    }
-    .detail-content.open {
-      max-height: 500px;
-      margin-top: 8px;
-      padding-top: 8px;
-      border-top: 1px dashed #FFD3B8;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    /* ========== 6. 种草打卡地 ========== */
-    .spot-card {
-      background: #FFF7F0;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 10px;
-    }
-    .spot-card:last-child {
-      margin-bottom: 0;
-    }
-    .spot-name {
-      font-weight: 600;
-      font-size: 15px;
-      margin-bottom: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .spot-tag {
-      font-size: 11px;
-      background: #D4F2DB;
-      color: #3A8A50;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-weight: normal;
-    }
-    .spot-desc {
-      font-size: 12px;
-      color: #7A5238;
-      margin-bottom: 6px;
-    }
-    .spot-meta {
-      font-size: 11px;
-      color: #9C6B4E;
-      line-height: 1.7;
-    }
+        /* 顶部标题 */
+        .page-header {
+            margin-bottom: 16px;
+        }
 
-    /* ========== 7. 行李清单 & 待办 ========== */
-    .check-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 7px 0;
-      border-bottom: 1px solid #FFF0E3;
-      font-size: 13px;
-    }
-    .check-item:last-child {
-      border: none;
-    }
-    .check-item input {
-      width: 16px;
-      height: 16px;
-      accent-color: #FFB380;
-    }
-    .check-group-title {
-      font-size: 13px;
-      color: #C27A52;
-      margin: 10px 0 6px;
-      font-weight: 500;
-    }
-    .check-group-title:first-child {
-      margin-top: 0;
-    }
-    .owner-tag {
-      font-size: 11px;
-      background: #FFE0CC;
-      color: #C27A52;
-      padding: 1px 6px;
-      border-radius: 4px;
-      margin-left: auto;
-    }
+        .page-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
 
-    /* ========== 8. 避雷提醒 ========== */
-    .warn-card {
-      background: #FFF5E6;
-      border-left: 4px solid #FFB84D;
-      border-radius: 8px;
-      padding: 12px 14px;
-      margin-bottom: 10px;
-    }
-    .warn-card:last-child {
-      margin-bottom: 0;
-    }
-    .warn-title {
-      font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 4px;
-      color: #996020;
-    }
-    .warn-desc {
-      font-size: 12px;
-      color: #A67535;
-      line-height: 1.6;
-    }
+        .page-subtitle {
+            font-size: 13px;
+            color: var(--text-light);
+        }
 
-    .footer-tip {
-      text-align: center;
-      font-size: 13px;
-      color: #B08468;
-      margin-top: 20px;
-    }
-  </style>
-  <!-- 高德地图API，使用你已申请的前端Key -->
-  <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=ee5a42cb872d9eb658182f98cf785072"></script>
+        /* 卡片通用 */
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title::before {
+            content: '';
+            width: 3px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* 首页行程概览 */
+        .trip-info {
+            background: linear-gradient(135deg, var(--primary-light), #ffe8d1);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .trip-info h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .trip-info p {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 4px;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 220px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        #homeMap, #searchMap, #planMap {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 时间轴 */
+        .timeline {
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: var(--primary-light);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 18px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 2px solid var(--bg);
+        }
+
+        .timeline-time {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 2px;
+        }
+
+        .timeline-name {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .timeline-desc {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .timeline-btns {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .btn-mini {
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 12px;
+            border: none;
+        }
+
+        .btn-mini.outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-light);
+        }
+
+        /* 搜索页 */
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .search-input {
+            flex: 1;
+            height: 40px;
+            padding: 0 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 16px;
+        }
+
+        .city-select {
+            height: 32px;
+            padding: 0 12px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            font-size: 13px;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            scrollbar-width: none;
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-tab {
+            flex-shrink: 0;
+            padding: 6px 14px;
+            border-radius: 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .poi-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .poi-item {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            box-shadow: var(--shadow);
+        }
+
+        .poi-info h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .poi-info p {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 2px;
+        }
+
+        .poi-rating {
+            color: var(--warning);
+            font-size: 12px;
+        }
+
+        .poi-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .btn-add {
+            padding: 5px 10px;
+            border-radius: 12px;
+            background: var(--primary);
+            color: white;
+            font-size: 12px;
+            border: none;
+        }
+
+        .btn-fav {
+            padding: 5px 10px;
+            border-radius: 12px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 12px;
+        }
+
+        /* 规划页 */
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .plan-mode {
+            display: flex;
+            gap: 8px;
+        }
+
+        .mode-btn {
+            padding: 5px 12px;
+            border-radius: 14px;
+            font-size: 12px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--text-light);
+        }
+
+        .mode-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .selected-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .selected-item {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+            cursor: grab;
+        }
+
+        .selected-item:active {
+            cursor: grabbing;
+        }
+
+        .selected-item .name {
+            font-size: 14px;
+        }
+
+        .selected-item .remove {
+            color: #e57373;
+            font-size: 12px;
+            background: none;
+            border: none;
+        }
+
+        .route-detail {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .route-section {
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .route-section:last-child {
+            border-bottom: none;
+        }
+
+        .route-section .from-to {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .route-section .info {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .btn-primary {
+            width: 100%;
+            height: 44px;
+            border-radius: 22px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* 工具箱 */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .tool-item {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 14px 8px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .tool-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .tool-name {
+            font-size: 12px;
+            color: var(--text);
+        }
+
+        .check-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .check-item input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .check-item label {
+            font-size: 14px;
+        }
+
+        .warning-box {
+            background: #fff3e0;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--warning);
+        }
+
+        .warning-box h5 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: #e65100;
+        }
+
+        .warning-box p {
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* 我的页面 */
+        .profile-header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .menu-list {
+            background: var(--card);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .menu-item {
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item .left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .menu-item .arrow {
+            color: #ccc;
+            font-size: 12px;
+        }
+
+        /* 底部导航 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--card);
+            display: flex;
+            box-shadow: 0 -2px 12px rgba(184, 112, 60, 0.06);
+            z-index: 100;
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        .tab-item.active {
+            color: var(--primary);
+        }
+
+        .tab-icon {
+            font-size: 20px;
+        }
+
+        .tab-center {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            margin-top: -20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(217, 142, 88, 0.3);
+        }
+    </style>
 </head>
 <body>
-<div class="container">
 
-  <!-- 1. 封面 -->
-  <div class="cover-card">
-    <h1>新加坡闺蜜行旅行手册</h1>
-    <div class="cover-sub">10月1日 — 10月4日 · 4天3晚<br>成都出发 · 4人同行</div>
-  </div>
-
-  <!-- 2. 航班倒计时 -->
-  <div class="card flight-card">
-    <div class="flight-title">✈️ 此刻 · 去程航班</div>
-    <div class="countdown-box">
-      <div class="countdown-time" id="countdown">22天 12小时</div>
-      <div class="countdown-label">距离 3U3089 起飞</div>
-    </div>
-    <div class="flight-info">
-      <div><span>航班号</span><span>3U3089 · 四川航空</span></div>
-      <div><span>出发</span><span>成都天府 T1 · 10:40</span></div>
-      <div><span>到达</span><span>新加坡樟宜 T2 · 15:40</span></div>
-      <div><span>飞行时长</span><span>5小时</span></div>
-      <div><span>值机开放</span><span>9/30 10:40</span></div>
-    </div>
-  </div>
-
-  <!-- 3. 行程总览+地图 -->
-  <div class="card">
-    <div class="section-title">🗺️ 行程总览</div>
-    <div class="day-tabs">
-      <div class="day-tab active" onclick="switchDay(0)">
-        D1
-        <div class="day-date">抵新·滨海湾</div>
-      </div>
-      <div class="day-tab" onclick="switchDay(1)">
-        D2
-        <div class="day-date">圣淘沙</div>
-      </div>
-      <div class="day-tab" onclick="switchDay(2)">
-        D3
-        <div class="day-date">文创·演唱会</div>
-      </div>
-      <div class="day-tab" onclick="switchDay(3)">
-        D4
-        <div class="day-date">返程</div>
-      </div>
-    </div>
-    <div id="map-container"></div>
-  </div>
-
-  <!-- 4. 今日路线时间轴 -->
-  <div class="card">
-    <div class="section-title">📍 今日路线 · Day1</div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-time">10:40 - 15:40</div>
-      <div class="timeline-name">飞抵樟宜 T2</div>
-      <a class="nav-btn" href="javascript:;">怎么去</a>
-      <span class="detail-btn">详情</span>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-time">16:00 - 17:00</div>
-      <div class="timeline-name">入住东陵JEN酒店</div>
-      <a class="nav-btn" href="javascript:;">怎么去</a>
-      <span class="detail-btn">详情</span>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-time">17:30 - 18:30</div>
-      <div class="timeline-name">鱼尾狮公园</div>
-      <a class="nav-btn" href="javascript:;">怎么去</a>
-      <span class="detail-btn">详情</span>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-time">19:00 - 19:45</div>
-      <div class="timeline-name">滨海湾花园超级树</div>
-      <a class="nav-btn" href="javascript:;">怎么去</a>
-      <span class="detail-btn">详情</span>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-dot"></div>
-      <div class="timeline-time">20:00 - 21:30</div>
-      <div class="timeline-name">珍宝海鲜(克拉码头)</div>
-      <a class="nav-btn" href="javascript:;">怎么去</a>
-      <span class="detail-btn">详情</span>
-    </div>
-  </div>
-
-  <!-- 5. 每日详情折叠 -->
-  <div class="card">
-    <div class="section-title">📝 每日详情</div>
-
-    <div class="detail-header" onclick="toggleDetail(this)">
-      <span>Day 1 抵新 · 滨海湾夜景</span>
-      <span>+</span>
-    </div>
-    <div class="detail-content">
-      下午落地樟宜，打车到酒店办理入住，休息后去鱼尾狮打卡，傍晚步行到滨海湾花园看超级树灯光秀，晚上克拉码头吃珍宝海鲜辣椒蟹，饭后散步回酒店。
+<!-- 首页 -->
+<div class="page active" id="page-home">
+    <div class="page-header">
+        <h1 class="page-title">今日行程</h1>
+        <p class="page-subtitle">9月28日 · 杭州 · 2人同行</p>
     </div>
 
-    <div class="detail-header" onclick="toggleDetail(this)" style="margin-top:10px;">
-      <span>Day 2 圣淘沙 · 环球影城</span>
-      <span>+</span>
-    </div>
-    <div class="detail-content">
-      全天环球影城，小黄人/变形金刚先刷，中午12-14点避高温在园区餐厅，下午未来水世界，出园缆车回HarbourFront吃松发肉骨茶。
+    <div class="trip-info">
+        <h2>江浙沪7天6晚之旅</h2>
+        <p>9.28 深圳 → 杭州 · 10.4 杭州 → 深圳</p>
+        <p>途经：杭州 / 苏州 / 南京</p>
     </div>
 
-    <div class="detail-header" onclick="toggleDetail(this)" style="margin-top:10px;">
-      <span>Day 3 文创日 + ITZY演唱会</span>
-      <span>+</span>
-    </div>
-    <div class="detail-content">
-      福康宁树洞上午先去(15-17点光最好,但上午人少)，中午旧禧街彩虹窗+哈芝巷，下午加东如切店屋喝亚坤，17:00前到Stadium，18:00 ITZY开演。
+    <div class="card-title">路线总览</div>
+    <div class="map-container">
+        <div id="homeMap"></div>
     </div>
 
-    <div class="detail-header" onclick="toggleDetail(this)" style="margin-top:10px;">
-      <span>Day 4 中峇鲁 + 返程</span>
-      <span>+</span>
+    <div class="card-title">今日时间轴</div>
+    <div class="card">
+        <div class="timeline" id="todayTimeline">
+            <div class="timeline-item">
+                <div class="timeline-time">20:00 - 22:15</div>
+                <div class="timeline-name">深圳宝安 → 杭州萧山</div>
+                <div class="timeline-desc">航班 CA404 · 飞行2h15m</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">23:00</div>
+                <div class="timeline-name">入住酒店</div>
+                <div class="timeline-desc">杭州西湖湖滨美居酒店</div>
+            </div>
+        </div>
     </div>
-    <div class="detail-content">
-      中峇鲁文艺区喝咖啡买手信，10:00前到星耀樟宜看雨漩涡拍最后一组合照，中午还车/行李，下午飞回成都。
-    </div>
-  </div>
+</div>
 
-  <!-- 6. 种草打卡地 -->
-  <div class="card">
-    <div class="section-title">💐 姐妹们种草的打卡地</div>
-
-    <div class="spot-card">
-      <div class="spot-name">
-        The Big Short Coffee
-        <span class="spot-tag">顺路 · Day3 如切线</span>
-      </div>
-      <div class="spot-desc">鸡尾酒式特调咖啡，招牌Mont Blanc，公认咖啡界天花板</div>
-      <div class="spot-meta">
-        📍 2 Fowlie Rd #01-01 · 如切<br>
-        💰 特调约S$8.5<br>
-        ⏰ 8:00-10:00 人少 · 座位少适合外带<br>
-        📌 小红书种草 · 免预约
-      </div>
+<!-- 探索页 -->
+<div class="page" id="page-explore">
+    <div class="page-header">
+        <h1 class="page-title">发现目的地</h1>
+        <p class="page-subtitle">搜索周边景点美食，一键加入行程</p>
     </div>
 
-    <div class="spot-card">
-      <div class="spot-name">
-        Common Man Coffee Roasters
-        <span class="spot-tag">可选加餐</span>
-      </div>
-      <div class="spot-desc">全球第6 · 亚洲最佳咖啡馆，极简白墙 + 手冲</div>
-      <div class="spot-meta">
-        📍 33 Keong Saik Rd<br>
-        💰 手冲 S$7-9<br>
-        ⏰ 开门 · 落地窗自然光<br>
-        📌 亚洲第一笔记 · 免预约
-      </div>
+    <select class="city-select" id="citySelect">
+        <option value="杭州">杭州市</option>
+        <option value="苏州">苏州市</option>
+        <option value="南京">南京市</option>
+    </select>
+
+    <div class="search-box">
+        <input type="text" class="search-input" id="searchInput" placeholder="搜索地点、地址...">
+        <button class="search-btn" onclick="doSearch()">🔍</button>
     </div>
-  </div>
 
-  <!-- 7. 行李清单 -->
-  <div class="card">
-    <div class="section-title">🧳 行李清单</div>
-
-    <div class="check-group-title">证件 & 钱</div>
-    <div class="check-item"><input type="checkbox"><span>护照(4人)</span></div>
-    <div class="check-item"><input type="checkbox"><span>新加坡签证电子页(打印)</span></div>
-    <div class="check-item"><input type="checkbox"><span>身份证</span></div>
-    <div class="check-item"><input type="checkbox"><span>新加坡现金新币 800+</span></div>
-    <div class="check-item"><input type="checkbox"><span>双币信用卡(2张备用)</span></div>
-    <div class="check-item"><input type="checkbox"><span>IDP国际驾照</span><span class="owner-tag">租车必备</span></div>
-
-    <div class="check-group-title">电子 & 充电</div>
-    <div class="check-item"><input type="checkbox" checked><span>手机+充电器</span></div>
-    <div class="check-item"><input type="checkbox" checked><span>充电宝(≤100Wh)</span></div>
-    <div class="check-item"><input type="checkbox" checked><span>转换插头(英标三脚)</span></div>
-    <div class="check-item"><input type="checkbox"><span>自拍杆 / 落地三脚架</span></div>
-
-    <div class="check-group-title">衣物 & 鞋</div>
-    <div class="check-item"><input type="checkbox"><span>夏装4天(浅色拍照上镜)</span></div>
-    <div class="check-item"><input type="checkbox"><span>薄外套1件(室内空调冷)</span></div>
-    <div class="check-item"><input type="checkbox"><span>舒适步行鞋(环球影城)</span></div>
-  </div>
-
-  <!-- 8. 待办分工 -->
-  <div class="card">
-    <div class="section-title">✅ 待办分工</div>
-
-    <div class="check-item"><input type="checkbox"><span>新加坡签证电子页打印(4人)</span><span class="owner-tag">西西 · 9/20前</span></div>
-    <div class="check-item"><input type="checkbox"><span>机票值机(3U3089 / CA404)</span><span class="owner-tag">lumi · 起飞前24h</span></div>
-    <div class="check-item"><input type="checkbox"><span>租车预约 + IDP驾照</span><span class="owner-tag">西西 · 9/28前</span></div>
-    <div class="check-item"><input type="checkbox" checked><span>演唱会门票座位确认</span><span class="owner-tag">momo · 已购</span></div>
-    <div class="check-item"><input type="checkbox"><span>珍宝海鲜(克拉码头)订位</span><span class="owner-tag">lumi · 9/25前</span></div>
-    <div class="check-item"><input type="checkbox"><span>松发肉骨茶电话预约</span><span class="owner-tag">小co · 9/25前</span></div>
-    <div class="check-item"><input type="checkbox"><span>酒店预订单截图保存</span><span class="owner-tag">小co · 9/28前</span></div>
-  </div>
-
-  <!-- 9. 当地避雷政策 -->
-  <div class="card">
-    <div class="section-title">⚠️ 狮城避雷 · 别交智商税</div>
-
-    <div class="warn-card">
-      <div class="warn-title">MRT全程禁食禁饮</div>
-      <div class="warn-desc">车厢和站台都不行，奶茶喝完再进站，出站再买。罚款约500新币。</div>
+    <div class="category-tabs" id="categoryTabs">
+        <button class="category-tab active" data-type="景点">🏞️ 景点</button>
+        <button class="category-tab" data-type="美食">🍜 美食</button>
+        <button class="category-tab" data-type="咖啡">☕ 咖啡</button>
+        <button class="category-tab" data-type="购物">🛍️ 购物</button>
+        <button class="category-tab" data-type="酒店">🏨 酒店</button>
+        <button class="category-tab" data-type="博物馆">🏛️ 博物馆</button>
     </div>
-    <div class="warn-card">
-      <div class="warn-title">乱丢垃圾阶梯罚款</div>
-      <div class="warn-desc">烟头、纸巾、奶茶盖都算。三次以上穿橙马甲扫街，罚款2000→4000→10000新币。</div>
-    </div>
-    <div class="warn-card">
-      <div class="warn-title">电子烟绝对别带</div>
-      <div class="warn-desc">托运随身都不行。2026年5月起处罚加重，重犯可驱逐入境，最高10000新币+驱逐。</div>
-    </div>
-  </div>
 
-  <div class="footer-tip">🔗 复制链接分享给同行伙伴 · 手机浏览器打开查看</div>
+    <div class="map-container" style="height: 180px;">
+        <div id="searchMap"></div>
+    </div>
 
+    <div class="card-title">推荐地点</div>
+    <div class="poi-list" id="poiList">
+        <div class="poi-item">
+            <div class="poi-info">
+                <h4>西湖风景名胜区</h4>
+                <p>距离市中心 2.3km · 杭州市西湖区</p>
+                <span class="poi-rating">⭐ 4.9分 · 免费</span>
+            </div>
+            <div class="poi-actions">
+                <button class="btn-add" onclick="addToPlan('西湖风景名胜区')">+行程</button>
+                <button class="btn-fav">收藏</button>
+            </div>
+        </div>
+        <div class="poi-item">
+            <div class="poi-info">
+                <h4>河坊街</h4>
+                <p>距离市中心 1.8km · 杭州市上城区</p>
+                <span class="poi-rating">⭐ 4.6分 · 免费</span>
+            </div>
+            <div class="poi-actions">
+                <button class="btn-add" onclick="addToPlan('河坊街')">+行程</button>
+                <button class="btn-fav">收藏</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 规划页 -->
+<div class="page" id="page-plan">
+    <div class="page-header">
+        <h1 class="page-title">行程规划</h1>
+        <p class="page-subtitle">拖拽调整顺序，智能生成最优路线</p>
+    </div>
+
+    <div class="plan-header">
+        <span style="font-weight: 500;">已选地点</span>
+        <div class="plan-mode">
+            <button class="mode-btn active" id="modeSmart">智能规划</button>
+            <button class="mode-btn" id="modeCustom">自定义</button>
+        </div>
+    </div>
+
+    <div class="selected-list" id="selectedList">
+        <div class="selected-item">
+            <span class="name">📍 西湖风景名胜区</span>
+            <button class="remove" onclick="removePlace(this)">移除</button>
+        </div>
+        <div class="selected-item">
+            <span class="name">📍 河坊街</span>
+            <button class="remove" onclick="removePlace(this)">移除</button>
+        </div>
+    </div>
+
+    <div class="card-title">路线详情</div>
+    <div class="route-detail" id="routeDetail">
+        <div class="route-section">
+            <div class="from-to">酒店 → 西湖</div>
+            <div class="info">🚶 步行 1.2km · 约18分钟</div>
+            <div class="info">🚕 打车约12元 · 8分钟</div>
+        </div>
+        <div class="route-section">
+            <div class="from-to">西湖 → 河坊街</div>
+            <div class="info">🚶 步行 2.1km · 约30分钟</div>
+            <div class="info">🚌 公交7路 · 2元 · 15分钟</div>
+        </div>
+    </div>
+
+    <div class="map-container" style="height: 200px;">
+        <div id="planMap"></div>
+    </div>
+
+    <button class="btn-primary" onclick="generateRoute()">生成今日路线图</button>
+</div>
+
+<!-- 工具箱 -->
+<div class="page" id="page-tool">
+    <div class="page-header">
+        <h1 class="page-title">出行工具箱</h1>
+        <p class="page-subtitle">旅行必备实用工具合集</p>
+    </div>
+
+    <div class="tool-grid">
+        <div class="tool-item">
+            <div class="tool-icon">🧳</div>
+            <div class="tool-name">行李清单</div>
+        </div>
+        <div class="tool-item">
+            <div class="tool-icon">💴</div>
+            <div class="tool-name">汇率换算</div>
+        </div>
+        <div class="tool-item">
+            <div class="tool-icon">🚇</div>
+            <div class="tool-name">地铁图</div>
+        </div>
+        <div class="tool-item">
+            <div class="tool-icon">🌤️</div>
+            <div class="tool-name">天气</div>
+        </div>
+        <div class="tool-item">
+            <div class="tool-icon">📝</div>
+            <div class="tool-name">待办分工</div>
+        </div>
+        <div class="tool-item">
+            <div class="tool-icon">📖</div>
+            <div class="tool-name">翻译</div>
+        </div>
+        <div class="tool-item">
+            <div class="tool-icon">⚠️</div>
+            <div class="tool-name">当地避雷</div>
+        </div>
+        <div class="tool-item">
+            <div class="tool-icon">📞</div>
+            <div class="tool-name">紧急电话</div>
+        </div>
+    </div>
+
+    <div class="card-title">行李清单</div>
+    <div class="card">
+        <div class="check-list">
+            <div class="check-item">
+                <input type="checkbox" id="bag1">
+                <label for="bag1">身份证 / 护照</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="bag2">
+                <label for="bag2">手机 + 充电器 + 充电宝</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="bag3">
+                <label for="bag3">换洗衣物 3套</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="bag4">
+                <label for="bag4">舒适步行鞋</label>
+            </div>
+            <div class="check-item">
+                <input type="checkbox" id="bag5">
+                <label for="bag5">雨伞 / 防晒帽</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-title">当地避雷</div>
+    <div class="warning-box">
+        <h5>景区周边美食慎入</h5>
+        <p>西湖、河坊街周边连锁餐厅价格偏高，建议往巷子里走50米，本地老店性价比高很多。</p>
+    </div>
+    <div class="warning-box">
+        <h5>苏州园林避开周末</h5>
+        <p>拙政园、留园周末人流量翻倍，建议工作日早上去，体验好很多。</p>
+    </div>
+    <div class="warning-box">
+        <h5>南京夫子庙夜景最佳</h5>
+        <p>夫子庙白天一般，晚上亮灯后才好看，建议傍晚过去，顺便坐秦淮河游船。</p>
+    </div>
+</div>
+
+<!-- 我的页面 -->
+<div class="page" id="page-mine">
+    <div class="profile-header">
+        <div class="avatar">✈️</div>
+        <h2 style="font-size: 18px; margin-bottom: 4px;">江浙沪之旅</h2>
+        <p style="font-size: 13px; color: var(--text-light);">9.28 - 10.4 · 2人同行</p>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-item">
+            <div class="stat-num">8</div>
+            <div class="stat-label">已选地点</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">3</div>
+            <div class="stat-label">收藏</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-num">0</div>
+            <div class="stat-label">已打卡</div>
+        </div>
+    </div>
+
+    <div class="card-title">全部行程</div>
+    <div class="card">
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-time">Day 1 · 9.28</div>
+                <div class="timeline-name">深圳 → 杭州</div>
+                <div class="timeline-desc">入住湖滨酒店</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">Day 2 · 9.29</div>
+                <div class="timeline-name">杭州西湖一日</div>
+                <div class="timeline-desc">2个景点 · 3家美食</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">Day 3 · 9.30</div>
+                <div class="timeline-name">杭州 → 苏州</div>
+                <div class="timeline-desc">高铁1h · 园林打卡</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">Day 4 · 10.1</div>
+                <div class="timeline-name">苏州 → 南京</div>
+                <div class="timeline-desc">高铁1.5h · 秦淮河夜景</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">Day 5-6 · 10.2-10.3</div>
+                <div class="timeline-name">南京深度游</div>
+                <div class="timeline-desc">中山陵 · 博物院 · 老门东</div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-time">Day 7 · 10.4</div>
+                <div class="timeline-name">南京 → 杭州 → 深圳</div>
+                <div class="timeline-desc">返程航班 CA403</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="menu-list">
+        <div class="menu-item">
+            <div class="left">⭐ 我的收藏</div>
+            <span class="arrow">›</span>
+        </div>
+        <div class="menu-item">
+            <div class="left">📸 历史行程</div>
+            <span class="arrow">›</span>
+        </div>
+        <div class="menu-item">
+            <div class="left">⚙️ 设置</div>
+            <span class="arrow">›</span>
+        </div>
+    </div>
+</div>
+
+<!-- 底部导航 -->
+<div class="tab-bar">
+    <div class="tab-item active" data-page="home">
+        <div class="tab-icon">🏠</div>
+        <div>首页</div>
+    </div>
+    <div class="tab-item" data-page="explore">
+        <div class="tab-icon">🔍</div>
+        <div>探索</div>
+    </div>
+    <div class="tab-item" data-page="plan">
+        <div class="tab-center">+</div>
+    </div>
+    <div class="tab-item" data-page="tool">
+        <div class="tab-icon">🧰</div>
+        <div>工具箱</div>
+    </div>
+    <div class="tab-item" data-page="mine">
+        <div class="tab-icon">👤</div>
+        <div>我的</div>
+    </div>
 </div>
 
 <script>
-  // ========== 1. 航班倒计时 ==========
-  function updateCountdown() {
-    const target = new Date('2026-10-01T10:40:00').getTime();
-    const now = new Date().getTime();
-    const diff = target - now;
+    // Tab切换
+    document.querySelectorAll('.tab-item').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const page = tab.dataset.page;
+            if (!page) return;
+            
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    document.getElementById('countdown').innerText = `${days}天 ${hours}小时`;
-  }
-  updateCountdown();
-  setInterval(updateCountdown, 60000);
-
-  // ========== 2. 每日详情折叠 ==========
-  function toggleDetail(el) {
-    const content = el.nextElementSibling;
-    const symbol = el.querySelector('span:last-child');
-    content.classList.toggle('open');
-    symbol.innerText = content.classList.contains('open') ? '-' : '+';
-  }
-
-  // ========== 3. 天数标签切换+地图切换 ==========
-  // 4天的点位坐标，对应不同颜色
-  const dayPoints = [
-    // D1 滨海湾线 橙色
-    [{name:'樟宜机场',lng:103.9915,lat:1.3644},{name:'东陵酒店',lng:103.8270,lat:1.3072},{name:'鱼尾狮',lng:103.8542,lat:1.2869},{name:'滨海湾花园',lng:103.8631,lat:1.2819},{name:'克拉码头',lng:103.8468,lat:1.2885}],
-    // D2 圣淘沙线 绿色
-    [{name:'酒店',lng:103.8270,lat:1.3072},{name:'圣淘沙环球',lng:103.8210,lat:1.2541},{name:'港湾城',lng:103.8060,lat:1.2655}],
-    // D3 文创线 紫色
-    [{name:'福康宁',lng:103.8476,lat:1.2905},{name:'旧禧街',lng:103.8460,lat:1.2910},{name:'哈芝巷',lng:103.8605,lat:1.3020},{name:'如切',lng:103.8850,lat:1.3120},{name:'体育馆',lng:103.8825,lat:1.3010}],
-    // D4 返程 黄色
-    [{name:'中峇鲁',lng:103.8280,lat:1.2870},{name:'樟宜机场',lng:103.9915,lat:1.3644}]
-  ];
-  const dayColors = ['#FF8C42', '#3CB371', '#9370DB', '#F0C040'];
-
-  let map, markers = [], polylines = [];
-
-  function initMap() {
-    map = new AMap.Map('map-container', {
-      zoom: 11,
-      center: [103.85, 1.29],
-      resizeEnable: true
-    });
-    renderDayPoints(0);
-  }
-
-  function switchDay(index) {
-    // 切换标签样式
-    document.querySelectorAll('.day-tab').forEach((tab,i)=>{
-      tab.classList.toggle('active', i===index);
-    });
-    renderDayPoints(index);
-  }
-
-  function renderDayPoints(index) {
-    // 清空旧标记和线
-    map.remove(markers);
-    map.remove(polylines);
-    markers = [];
-    polylines = [];
-
-    const points = dayPoints[index];
-    const color = dayColors[index];
-    const path = [];
-
-    points.forEach((p,i)=>{
-      const marker = new AMap.Marker({
-        position: new AMap.LngLat(p.lng, p.lat),
-        title: p.name,
-        icon: new AMap.Icon({
-          size: new AMap.Size(12,12),
-          image: 'data:image/svg+xml;base64,' + btoa(`<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"><circle cx="6" cy="6" r="6" fill="${color}"/></svg>`),
-          imageSize: new AMap.Size(12,12)
-        })
-      });
-      markers.push(marker);
-      path.push([p.lng, p.lat]);
+            // 切换到对应页面时刷新地图
+            if (page === 'home') initHomeMap();
+            if (page === 'explore') initSearchMap();
+            if (page === 'plan') initPlanMap();
+        });
     });
 
-    // 绘制路线
-    const polyline = new AMap.Polyline({
-      path: path,
-      strokeColor: color,
-      strokeWeight: 3,
-      strokeOpacity: 0.8,
-      lineJoin: 'round'
+    // 分类标签切换
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            doSearch();
+        });
     });
-    polylines.push(polyline);
 
-    map.add(markers);
-    map.add(polyline);
-    map.setFitView(markers, false, [20,20,20,20]);
-  }
-
-  window.onload = initMap;
-
-  // ========== 4. 勾选本地保存 ==========
-  document.querySelectorAll('input[type="checkbox"]').forEach((box, idx)=>{
-    const saveKey = 'check_' + idx;
-    if(localStorage.getItem(saveKey) === '1') box.checked = true;
-    box.addEventListener('change', ()=>{
-      localStorage.setItem(saveKey, box.checked ? '1' : '0');
+    // 模式切换
+    document.getElementById('modeSmart').addEventListener('click', function() {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
     });
-  });
+    document.getElementById('modeCustom').addEventListener('click', function() {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+    });
+
+    // 地图初始化
+    let homeMap, searchMap, planMap;
+    let placeSearch;
+
+    function initHomeMap() {
+        if (homeMap) return;
+        homeMap = new AMap.Map('homeMap', {
+            zoom: 12,
+            center: [120.15, 30.28],
+            mapStyle: 'amap://styles/light'
+        });
+    }
+
+    function initSearchMap() {
+        if (searchMap) return;
+        searchMap = new AMap.Map('searchMap', {
+            zoom: 13,
+            center: [120.15, 30.28],
+            mapStyle: 'amap://styles/light'
+        });
+        placeSearch = new AMap.PlaceSearch({
+            pageSize: 10,
+            pageIndex: 1,
+            city: '杭州',
+            map: searchMap
+        });
+    }
+
+    function initPlanMap() {
+        if (planMap) return;
+        planMap = new AMap.Map('planMap', {
+            zoom: 13,
+            center: [120.15, 30.28],
+            mapStyle: 'amap://styles/light'
+        });
+    }
+
+    // 搜索POI
+    function doSearch() {
+        const keyword = document.getElementById('searchInput').value || document.querySelector('.category-tab.active').dataset.type;
+        const city = document.getElementById('citySelect').value;
+        
+        if (!placeSearch) initSearchMap();
+        placeSearch.setCity(city);
+        placeSearch.search(keyword, (status, result) => {
+            if (status === 'complete' && result.poiList) {
+                renderPoiList(result.poiList.pois);
+            }
+        });
+    }
+
+    // 渲染POI列表
+    function renderPoiList(pois) {
+        const list = document.getElementById('poiList');
+        list.innerHTML = '';
+        pois.slice(0, 6).forEach(poi => {
+            const item = document.createElement('div');
+            item.className = 'poi-item';
+            item.innerHTML = `
+                <div class="poi-info">
+                    <h4>${poi.name}</h4>
+                    <p>${poi.address || ''} · ${poi.distance ? (poi.distance/1000).toFixed(1)+'km' : ''}</p>
+                    <span class="poi-rating">⭐ ${poi.rating || '4.5'}分</span>
+                </div>
+                <div class="poi-actions">
+                    <button class="btn-add" onclick="addToPlan('${poi.name}')">+行程</button>
+                    <button class="btn-fav">收藏</button>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    // 加入行程
+    function addToPlan(name) {
+        const list = document.getElementById('selectedList');
+        const item = document.createElement('div');
+        item.className = 'selected-item';
+        item.innerHTML = `
+            <span class="name">📍 ${name}</span>
+            <button class="remove" onclick="removePlace(this)">移除</button>
+        `;
+        list.appendChild(item);
+        alert('已加入行程规划');
+    }
+
+    // 移除地点
+    function removePlace(btn) {
+        btn.parentElement.remove();
+    }
+
+    // 生成路线
+    function generateRoute() {
+        alert('路线已生成，已同步到首页今日行程');
+        switchTab('home');
+    }
+
+    function switchTab(page) {
+        document.querySelector(`[data-page="${page}"]`).click();
+    }
+
+    // 城市切换
+    document.getElementById('citySelect').addEventListener('change', doSearch);
+
+    // 页面加载初始化
+    window.onload = () => {
+        initHomeMap();
+        // 加载本地存储数据
+        loadLocalData();
+    };
+
+    // 本地存储
+    function saveLocalData() {
+        const data = {
+            bags: Array.from(document.querySelectorAll('.check-item input')).map(i => i.checked)
+        };
+        localStorage.setItem('tripData', JSON.stringify(data));
+    }
+
+    function loadLocalData() {
+        const data = localStorage.getItem('tripData');
+        if (data) {
+            const obj = JSON.parse(data);
+            const inputs = document.querySelectorAll('.check-item input');
+            obj.bags.forEach((checked, i) => {
+                if (inputs[i]) inputs[i].checked = checked;
+            });
+        }
+    }
+
+    // 监听勾选保存
+    document.querySelectorAll('.check-item input').forEach(input => {
+        input.addEventListener('change', saveLocalData);
+    });
 </script>
+
 </body>
 </html>
